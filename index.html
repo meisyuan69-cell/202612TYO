@@ -710,7 +710,7 @@
           <div class="stay-addr">東京都墨田区立川 2-2-7 ファミリーステイ森下</div>
         </div>
         <div class="stay-actions">
-          <a class="map-btn" style="margin-top:0;" href="https://www.google.com/maps/search/?api=1&query=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A2%A8%E7%94%B0%E5%8C%BA%E7%AB%8B%E5%B7%9D+2-2-7+%E3%83%95%E3%82%A1%E3%83%9F%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%86%E3%82%A4%E6%A3%AE%E4%B8%8B" >📍 Google 地圖導航</a>
+          <a class="map-btn" style="margin-top:0;" href="https://www.google.com/maps/dir/?api=1&destination=%E6%9D%B1%E4%BA%AC%E9%83%BD%E5%A2%A8%E7%94%B0%E5%8C%BA%E7%AB%8B%E5%B7%9D+2-2-7+%E3%83%95%E3%82%A1%E3%83%9F%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%86%E3%82%A4%E6%A3%AE%E4%B8%8B&dir_action=navigate" target="_blank" rel="noopener">📍 Google 地圖導航</a>
           <div class="elevator-note">🛗 森下站 A5、A6 出口有電梯</div>
         </div>
       </div>
@@ -931,10 +931,12 @@
   </div>
 
   <script>
-// 產生可直接喚醒手機 Google 地圖 App 的連結
-function getMapUrl(query) {
-  return `httpsmaps.google.com{encodeURIComponent(query)}`;
-}
+    // 產生 Google 地圖導航連結函式
+    function getMapUrl(query) {
+      // 直接開啟 Google Maps 路線導航，以手機目前位置作為起點
+      return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query)}&dir_action=navigate`;
+    }
+
     // 1. 住宿周邊超市與早餐資料
     const baseStores = [
       {
@@ -1350,7 +1352,7 @@ function getMapUrl(query) {
           </div>
           <div class="food-detail">📍 ${st.address}</div>
           <div class="food-note">💡 ${st.note}</div>
-          <a class="map-btn" href="${getMapUrl(st.mapQuery || st.address)}" >📍 Google 地圖導航</a>
+          <a class="map-btn" href="${getMapUrl(st.mapQuery || st.address)}" target="_blank" rel="noopener">📍 Google 地圖導航</a>
         </div>
       `).join('');
     }
@@ -1380,12 +1382,12 @@ function getMapUrl(query) {
         const isDone = !!doneMap[key];
         const transHtml = ev.transport ? `<div class="tl-trans">🚇 ${ev.transport}</div>` : '';
         const subHtml = ev.sub ? `<ul class="tl-sub">${ev.sub.map(s => {
-          const mapBadge = s.mapQuery ? `<a class="sub-map-link" href="${getMapUrl(s.mapQuery)}" >📍導航</a>` : '';
+          const mapBadge = s.mapQuery ? `<a class="sub-map-link" href="${getMapUrl(s.mapQuery)}" target="_blank" rel="noopener">📍導航</a>` : '';
           return `<li>${s.text}${mapBadge}</li>`;
         }).join('')}</ul>` : '';
         
-        const mapBtnHtml = ev.mapQuery ? `<a class="map-btn" href="${getMapUrl(ev.mapQuery)}" >📍 開啟地圖導航</a>` : '';
-        const linkHtml = ev.link ? `<a href="${ev.link}"  class="tl-link">🔗 ${ev.linkText}</a>` : '';
+        const mapBtnHtml = ev.mapQuery ? `<a class="map-btn" href="${getMapUrl(ev.mapQuery)}" target="_blank" rel="noopener">📍 開啟地圖導航</a>` : '';
+        const linkHtml = ev.link ? `<a href="${ev.link}" target="_blank" rel="noopener" class="tl-link">🔗 ${ev.linkText}</a>` : '';
         const actionsHtml = (mapBtnHtml || linkHtml) ? `<div class="tl-actions">${mapBtnHtml}${linkHtml}</div>` : '';
 
         return `
@@ -1423,7 +1425,7 @@ function getMapUrl(query) {
             <div class="food-detail">📍 ${r.address}</div>
             <div class="food-detail">🕒 營業時間：${r.hours}</div>
             <div class="food-note">💡 ${r.note}</div>
-            <a class="map-btn" href="${getMapUrl(r.mapQuery || r.address)}" >📍 Google 地圖導航</a>
+            <a class="map-btn" href="${getMapUrl(r.mapQuery || r.address)}" target="_blank" rel="noopener">📍 Google 地圖導航</a>
           </div>
         `).join('');
       } else {
@@ -1448,7 +1450,7 @@ function getMapUrl(query) {
               </div>
               <div class="food-detail">📍 ${st.address}</div>
               <div class="food-note">💡 ${st.note}</div>
-              <a class="map-btn" href="${getMapUrl(st.mapQuery || st.address)}" >📍 Google 地圖導航</a>
+              <a class="map-btn" href="${getMapUrl(st.mapQuery || st.address)}" target="_blank" rel="noopener">📍 Google 地圖導航</a>
             </div>
           `).join('')}
         </div>
@@ -1468,7 +1470,7 @@ function getMapUrl(query) {
                   <div class="food-detail">📍 ${r.address}</div>
                   <div class="food-detail">🕒 營業時間：${r.hours}</div>
                   <div class="food-note">💡 ${r.note}</div>
-                  <a class="map-btn" href="${getMapUrl(r.mapQuery || r.address)}" >📍 Google 地圖導航</a>
+                  <a class="map-btn" href="${getMapUrl(r.mapQuery || r.address)}" target="_blank" rel="noopener">📍 Google 地圖導航</a>
                 </div>
               `).join('')}
             </div>
