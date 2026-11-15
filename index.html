@@ -667,6 +667,26 @@
   .dinner-caveat { background:#FFF8E9; border:1px dashed #D5B263; border-radius:12px; padding:10px 11px; color:#78643E; font-size:.73rem; line-height:1.5; margin-top:12px; }
 }
 
+
+/* 飲料頁籤：手機卡片與店家下拉篩選 */
+.drink-filter-panel{background:#FFFDF7;border:1px solid #E5DEC9;border-radius:16px;padding:13px;margin:0 0 12px;box-shadow:0 2px 8px rgba(74,62,53,.045)}
+.drink-filter-label{display:block;font-size:.76rem;font-weight:800;color:#7E7063;margin:0 0 7px}
+.drink-select{width:100%;min-height:44px;border:1px solid #D9CDB5;border-radius:11px;background:#FBF7EE;color:#4A3E35;padding:0 38px 0 12px;font-size:.9rem;font-weight:700;outline:none}
+.drink-result-count{font-size:.73rem;color:#8A7C6D;margin:0 2px 10px}
+.drink-store-intro{background:#F4F0E4;border:1px dashed #D5B263;border-radius:13px;padding:11px 12px;margin:0 0 12px;font-size:.77rem;line-height:1.55;color:#665844}
+.drink-store-intro strong{display:block;color:#80613B;margin-bottom:4px;font-size:.8rem}
+.drink-card{background:#FFFDF7;border:1px solid #E5DEC9;border-radius:16px;padding:13px;margin:0 0 10px;box-shadow:0 2px 8px rgba(74,62,53,.045)}
+.drink-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.drink-name{font-size:1rem;line-height:1.4;font-weight:800;overflow-wrap:anywhere}
+.drink-ja{font-size:.82rem;line-height:1.5;color:#80613B;font-weight:700;margin-top:5px;overflow-wrap:anywhere}
+.drink-card-tag{display:inline-block;background:#F2E8CF;color:#80613B;padding:3px 8px;border-radius:9px;font-size:.68rem;font-weight:700;margin-top:7px}
+.drink-detail{background:#FBF7EE;border-radius:10px;padding:9px 10px;margin-top:10px;font-size:.78rem;line-height:1.55;color:#65594F;overflow-wrap:anywhere}
+.drink-detail div+div{margin-top:5px}
+.drink-detail strong{color:#4A3E35}
+.drink-step{background:#F0F4EC;border:1px solid #D8E2D1;border-radius:12px;padding:10px 11px;margin:0 0 12px;font-size:.76rem;line-height:1.55;color:#526449}
+.drink-step strong{display:block;margin-bottom:4px;color:#4A633D}
+.drink-empty{background:#FFFDF7;border:1px dashed #D9CDB5;border-radius:14px;padding:20px;text-align:center;color:#8A7C6D;font-size:.82rem}
+
 </style>
 </head>
 <body>
@@ -678,6 +698,7 @@
       <button class="nav-btn" onclick="switchView('daily', this)">每日行程</button>
       <button class="nav-btn" onclick="switchView('foodall', this)">餐廳/超市</button>
       <button class="nav-btn" onclick="switchView('morishitaDinner', this)">森下晚餐列表</button>
+      <button class="nav-btn" onclick="switchView('drinks', this)">飲料</button>
       <button class="nav-btn" onclick="switchView('taxfree', this)">日本退稅</button>
       <button class="nav-btn" onclick="switchView('currency', this)">匯率換算</button>
     </div>
@@ -803,6 +824,11 @@
     <section id="view-morishitaDinner" class="view-section">
       <div class="sec-heading">🍽️ 森下晚餐列表</div>
       <div id="morishitaDinnerTable"></div>
+    </section>
+
+    <section id="view-drinks" class="view-section">
+      <div class="sec-heading">☕ 日本咖啡與超商飲品點餐字卡</div>
+      <div id="drinksContainer"></div>
     </section>
 
     <!-- 第四頁：日本退稅攻略 -->
@@ -1665,12 +1691,49 @@
       renderMorishitaDinner();
     }
 
+
+    // 飲料點餐字卡：內容依使用者提供的整理資料
+    const drinkData = [{"store": "日本星巴克 Starbucks", "kind": "咖啡店", "title": "冬季限定：全牛奶皇家奶茶", "japanese": "ロイヤル ミルク ティー", "chinese": "皇家奶茶", "detail1": "尺寸：トール（中杯・固定尺寸）", "detail2": "客製化：オールミルク（全牛奶、不加水；免費）", "note": "熱飲限定；中杯單一尺寸"}, {"store": "日本星巴克 Starbucks", "kind": "咖啡店", "title": "經典必點：冰焙茶＆經典茶拿鐵", "japanese": "アイス ほうじ茶 ＆ クラシック ティー ラテ", "chinese": "冰焙茶＆經典茶拿鐵", "detail1": "尺寸：ベンティ（特大杯；可依尺寸對照替換）", "detail2": "客製化：ライト シロップ（少糖漿；免費）；ライト アイス（少冰；免費）；コンディメントミルク（添加普通牛奶；免費）", "note": "冰飲"}, {"store": "日本星巴克 Starbucks", "kind": "咖啡店", "title": "雲朵奶泡版：焙茶＆經典茶拿鐵", "japanese": "アイス ほうじ茶 ＆ クラシック ティー ラテ", "chinese": "冰焙茶＆經典茶拿鐵", "detail1": "尺寸：トール（中杯；可依尺寸對照替換）", "detail2": "客製化：ムースフォーム 追加（加冷奶泡；＋¥55）；ライト シロップ（少糖漿；免費）；ライト アイス（少冰；免費）", "note": "加冷奶泡版本"}, {"store": "日本星巴克 Starbucks", "kind": "咖啡店", "title": "濃郁版：全牛奶英式早餐茶拿鐵", "japanese": "イングリッシュ ブレックファスト ティー ラテ", "chinese": "英式早餐茶拿鐵", "detail1": "尺寸：トール（中杯；可依尺寸對照替換）", "detail2": "客製化：オールミルク（全牛奶；免費）；ホワイトモカシロップ に変更（更換白摩卡糖漿；免費）", "note": ""}, {"store": "日本星巴克 Starbucks", "kind": "咖啡店", "title": "咖啡香氣版：印度奶茶拿鐵", "japanese": "チャイ ティー ラテ", "chinese": "印度奶茶拿鐵", "detail1": "尺寸：トール（中杯；可依尺寸對照替換）", "detail2": "客製化：エスプレッソショット 追加（加一份濃縮咖啡；＋¥55）；オールミルク（全牛奶；免費）", "note": ""}, {"store": "日本星巴克 Starbucks", "kind": "咖啡店", "title": "甜點系：特濃焦糖白摩卡抹茶星冰樂", "japanese": "抹茶 クリーム フラペチーノ", "chinese": "抹茶奶霜星冰樂", "detail1": "尺寸：トール（中杯；可依尺寸對照替換）", "detail2": "客製化：パウダー 多め（抹茶粉多一點；免費）；ホワイトモカシロップ に変更（更換白摩卡糖漿；免費）；キャラメルソース 追加（加焦糖醬；免費）", "note": "品名原文為抹茶奶霜星冰樂；客製化依提供內容列示"}, {"store": "日本星巴克 Starbucks", "kind": "咖啡店", "title": "清爽果香系：蜂蜜柚子香檸茶", "japanese": "アイス ゆず シトラス ＆ ティー", "chinese": "冰柚子香檸果茶", "detail1": "尺寸：トール（中杯；可依尺寸對照替換）", "detail2": "客製化：はちみつ 追加（加蜂蜜；免費）；ライト アイス（少冰；免費）", "note": "冰飲"}, {"store": "藍瓶咖啡 Blue Bottle Coffee", "kind": "咖啡店", "title": "經典招牌：紐奧良冰咖啡（限冰飲）", "japanese": "ニューオリンズ（NOLA）", "chinese": "紐奧良冰咖啡", "detail1": "牛奶：通常のミルク（一般牛奶）", "detail2": "", "note": "限冰飲"}, {"store": "藍瓶咖啡 Blue Bottle Coffee", "kind": "咖啡店", "title": "人氣進階：NOLA 冷奶泡（限冰飲）", "japanese": "ノラ コールドフォーム（NOLA With Cold Foam）", "chinese": "紐奧良冰咖啡＋冷奶泡", "detail1": "牛奶：通常のミルク（一般牛奶）", "detail2": "", "note": "限冰飲"}, {"store": "藍瓶咖啡 Blue Bottle Coffee", "kind": "咖啡店", "title": "濃郁奶咖：直布羅陀（限熱飲）", "japanese": "ジブラルタル（Gibraltar）", "chinese": "直布羅陀（雙份濃縮加少量牛奶）", "detail1": "牛奶：通常のミルク（一般牛奶）", "detail2": "", "note": "限熱飲"}, {"store": "藍瓶咖啡 Blue Bottle Coffee", "kind": "咖啡店", "title": "手沖黑咖啡：單品手沖咖啡", "japanese": "ドリップコーヒー シングルオリジン（Single Origin Drip）", "chinese": "手沖單品咖啡", "detail1": "溫度：アイス（冰）／ホット（熱）二選一", "detail2": "", "note": ""}, {"store": "藍瓶咖啡 Blue Bottle Coffee", "kind": "咖啡店", "title": "抹茶控必點：抹茶拿鐵冷奶泡（限冰飲）", "japanese": "抹茶ラテ with コールドフォーム（Matcha Latte With Cold Foam）", "chinese": "冰抹茶拿鐵＋冷奶泡", "detail1": "牛奶：通常のミルク（一般牛奶）", "detail2": "", "note": "限冰飲"}, {"store": "藍瓶咖啡 Blue Bottle Coffee", "kind": "咖啡店", "title": "冬季限定：冬季拿鐵", "japanese": "ウィンターラテ（Winter Latte）", "chinese": "冬季限定香料拿鐵", "detail1": "溫度：ホット（熱）／アイス（冰）二選一；牛奶：通常のミルク（一般牛奶）", "detail2": "", "note": ""}, {"store": "藍瓶咖啡 Blue Bottle Coffee", "kind": "咖啡店", "title": "必點現烤甜點：列日鬆餅", "japanese": "リエージュ ワッフル（Liege Waffle）", "chinese": "現烤列日鬆餅", "detail1": "", "detail2": "", "note": "甜點"}, {"store": "日本 7-ELEVEN（SEVEN CAFÉ）", "kind": "超商", "title": "現泡皇家奶茶", "japanese": "ロイヤルミルクティー（紅茶マシン専用）", "chinese": "", "detail1": "購買方式：冷凍櫃拿專用杯結帳，放入現泡茶機", "detail2": "", "note": ""}, {"store": "日本 7-ELEVEN（SEVEN CAFÉ）", "kind": "超商", "title": "濃郁焙茶拿鐵", "japanese": "ほうじ茶ラテ（紅茶マシン専用）", "chinese": "", "detail1": "購買方式：冷凍櫃拿專用杯結帳，放入現泡茶機", "detail2": "", "note": ""}, {"store": "日本 7-ELEVEN（SEVEN CAFÉ）", "kind": "超商", "title": "高級冰／熱拿鐵", "japanese": "アイスカフェラテ ／ ホットカフェラテ", "chinese": "", "detail1": "購買方式：冰飲拿冷凍櫃冰杯；熱飲向店員點餐", "detail2": "", "note": ""}, {"store": "日本 7-ELEVEN（SEVEN CAFÉ）", "kind": "超商", "title": "高級冰／熱黑咖啡", "japanese": "アイスコーヒー ／ ホットコーヒー", "chinese": "", "detail1": "購買方式：冰飲拿冷凍櫃冰杯；熱飲向店員點餐", "detail2": "", "note": ""}, {"store": "日本 7-ELEVEN（SEVEN CAFÉ）", "kind": "超商", "title": "現打果昔", "japanese": "セブンカフェ スムージー", "chinese": "", "detail1": "購買方式：冷凍櫃拿水果杯結帳，掃條碼後放入果昔機", "detail2": "", "note": ""}, {"store": "日本全家 FamilyMart（FAMIMA CAFÉ）", "kind": "超商", "title": "Afternoon Tea 皇家奶茶冰沙", "japanese": "アフタヌーンティー ロイヤルミルクティーフラッペ", "chinese": "", "detail1": "購買方式：冷凍櫃拿杯結帳 → 捏軟 → 按「フラッペ」鍵", "detail2": "", "note": ""}, {"store": "日本全家 FamilyMart（FAMIMA CAFÉ）", "kind": "超商", "title": "GODIVA 巧克力冰沙", "japanese": "ゴディバ監修 チョコレートフラッペ", "chinese": "", "detail1": "購買方式：冷凍櫃拿杯結帳 → 捏軟 → 按「フラッペ」鍵", "detail2": "", "note": ""}, {"store": "日本全家 FamilyMart（FAMIMA CAFÉ）", "kind": "超商", "title": "特大杯冰拿鐵", "japanese": "アイスカフェラテ LLサイズ", "chinese": "", "detail1": "購買方式：冷凍櫃拿 LL 尺寸冰杯結帳，再至咖啡機操作", "detail2": "", "note": ""}, {"store": "日本全家 FamilyMart（FAMIMA CAFÉ）", "kind": "超商", "title": "熱拿鐵／熱黑咖啡", "japanese": "カフェラテ ／ ブレンド", "chinese": "", "detail1": "購買方式：直接向櫃檯店員點餐領取空杯，再至咖啡機操作", "detail2": "", "note": ""}, {"store": "日本 LAWSON（MACHI café）", "kind": "超商", "title": "濃厚皇家奶茶（熱／冰）", "japanese": "ホット ロイヤルミルクティー（熱）／ アイス ロイヤルミルクティー（冰）", "chinese": "", "detail1": "備註：LAWSON 招牌；阿薩姆茶香與奶味極濃", "detail2": "", "note": "熱／冰"}, {"store": "日本 LAWSON（MACHI café）", "kind": "超商", "title": "MEGA 特大杯冰拿鐵", "japanese": "メガ アイスカフェラテ", "chinese": "", "detail1": "備註：接近一般大杯兩倍容量，重乳系首選", "detail2": "", "note": "冰飲"}, {"store": "日本 LAWSON（MACHI café）", "kind": "超商", "title": "一般冰／熱拿鐵", "japanese": "アイスカフェラテ（冰）／ カフェラテ（熱）", "chinese": "", "detail1": "備註：深焙咖啡豆搭配香濃牛奶，奶香最濃郁", "detail2": "", "note": "冰／熱"}, {"store": "日本 LAWSON（MACHI café）", "kind": "超商", "title": "現打香蕉牛乳果昔", "japanese": "バナナミルク（MACHI café+ 限定）", "chinese": "", "detail1": "備註：僅限設有「MACHI café+」專櫃的門市販售", "detail2": "", "note": "限定門市"}];
+    const drinkStoreInstructions = {"日本星巴克 Starbucks": "尺寸對照：ショート Short＝小杯；トール Tall＝中杯；グランデ Grande＝大杯；ベンティ Venti＝特大杯。皇家奶茶為熱飲限定、固定 Tall 尺寸。", "藍瓶咖啡 Blue Bottle Coffee": "以下依提供的點餐字卡整理；部分飲品限定冰飲或熱飲，手沖咖啡與冬季拿鐵可選冰／熱。", "日本 7-ELEVEN（SEVEN CAFÉ）": "冰飲／現泡茶／果昔：從冷凍櫃拿專用杯至櫃檯結帳，撕開封膜後放入對應機台按開始。熱飲：向櫃檯店員口頭點餐，結帳後領取空杯至咖啡機操作。", "日本全家 FamilyMart（FAMIMA CAFÉ）": "冰沙（フラッペ）：從冷凍櫃拿冰沙杯結帳，先用手將杯身稍微捏軟，再放入咖啡機按「フラッペ（Frappe）」按鈕。冰／熱咖啡：冰飲拿冷凍櫃冰杯結帳；熱飲向店員點餐，機台旁有免費糖粉可添加。", "日本 LAWSON（MACHI café）": "多數門市為店員代操作：不需自取冰杯，直接向櫃檯店員出示日文品名，店員會製作完成後交給你；部分新式門市為自助機台。"};
+    let activeDrinkStore = '全部店家';
+
+    function renderDrinks() {
+      const container = document.getElementById('drinksContainer');
+      if (!container) return;
+      const stores = ['全部店家', ...Object.keys(drinkStoreInstructions)];
+      const rows = activeDrinkStore === '全部店家' ? drinkData : drinkData.filter(x => x.store === activeDrinkStore);
+      const options = stores.map(name => `<option value="${name}" ${activeDrinkStore === name ? 'selected' : ''}>${name}${name === '全部店家' ? `（${drinkData.length} 項）` : `（${drinkData.filter(x => x.store === name).length} 項）`}</option>`).join('');
+      const intro = activeDrinkStore === '全部店家'
+        ? '選擇店家後，會只顯示該店家的飲品點餐字卡。'
+        : drinkStoreInstructions[activeDrinkStore];
+      container.innerHTML = `
+        <div class="drink-filter-panel">
+          <label class="drink-filter-label" for="drinkStoreSelect">🏪 選擇店家篩選</label>
+          <select id="drinkStoreSelect" class="drink-select" onchange="setDrinkStore(this.value)">${options}</select>
+        </div>
+        <div class="drink-store-intro"><strong>📌 ${activeDrinkStore === '全部店家' ? '使用提示' : activeDrinkStore + '｜購買／點餐方式'}</strong>${intro}</div>
+        <div class="drink-result-count">目前顯示 ${rows.length} / ${drinkData.length} 項飲品與點餐項目</div>
+        ${rows.map((x,idx) => `
+          <article class="drink-card">
+            <div class="drink-card-top"><div><div class="drink-name">${idx+1}. ${x.title}</div><div class="drink-ja">${x.japanese}</div>${x.chinese ? `<span class="drink-card-tag">${x.chinese}</span>` : ''}</div></div>
+            <div class="drink-detail">${x.detail1 ? `<div>• ${x.detail1}</div>` : ''}${x.detail2 ? `<div>• ${x.detail2}</div>` : ''}${x.note ? `<div>• ${x.note}</div>` : ''}</div>
+          </article>`).join('')}
+      `;
+    }
+
+    function setDrinkStore(store) {
+      activeDrinkStore = store;
+      renderDrinks();
+    }
+
+
     // 初始化所有區塊
     renderBaseStores();
     renderDayBar();
     renderDailyView();
     renderAllFoodView();
     renderMorishitaDinner();
+    renderDrinks();
     // 匯率換算功能（固定匯率 0.21）
     function calcTwd() {
       const rate = 0.21;
