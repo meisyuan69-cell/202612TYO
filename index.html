@@ -628,6 +628,45 @@
     .res-formula { font-size: 0.78rem; color: var(--text-sub); }
 
 
+
+/* PREVIEW ONLY — mobile-first dinner layout concept */
+@media (max-width: 600px) {
+  body { padding-top: 92px !important; padding-bottom: 24px; background-size: 20px 20px; }
+  nav.top-nav { height: 86px !important; padding: 8px 12px 7px !important; display:flex !important; flex-direction:column !important; align-items:stretch !important; justify-content:center !important; gap:6px !important; }
+  .nav-brand { font-size: .82rem !important; line-height:1.1; }
+  .nav-tabs { width:100%; gap:6px !important; overflow-x:auto !important; padding-bottom:2px; }
+  .nav-btn { font-size:.76rem !important; padding:5px 10px !important; }
+  .container { padding: 8px 12px 18px !important; }
+  .hero-banner { padding: 10px 4px 12px !important; }
+  .hero-banner h1 { font-size:1.12rem !important; }
+  .hero-banner .date-pill { font-size:.72rem !important; }
+  .sec-heading { font-size:1.12rem !important; margin:10px 0 9px !important; }
+  .dinner-filter-wrap { margin: 12px 0 13px; }
+  .dinner-filter-title { font-size:.76rem; color:#7E7063; font-weight:700; margin:0 0 7px 2px; }
+  .dinner-filters { display:flex; gap:7px; overflow-x:auto; padding:1px 1px 7px; scrollbar-width:thin; }
+  .dinner-filter-btn { flex:0 0 auto; min-height:38px; border:1px solid #E5DEC9; border-radius:20px; padding:7px 12px; background:#FFFDF7; color:#65594F; font-size:.78rem; font-weight:700; cursor:pointer; white-space:nowrap; }
+  .dinner-filter-btn.active { background:#C26D53; color:#fff; border-color:#C26D53; }
+  .dinner-filter-btn .filter-count { opacity:.8; margin-left:3px; font-size:.7rem; }
+  .dinner-result-count { color:#7E7063; font-size:.76rem; font-weight:700; margin:0 2px 9px; }
+  .dinner-empty { background:#FFFDF7; border:1px dashed #D9CFB9; border-radius:14px; padding:18px 12px; color:#7E7063; text-align:center; font-size:.84rem; }
+  #morishitaDinnerCount { background:transparent; border:0; padding:2px 2px 8px; margin:0; font-size:.78rem; color:#7E7063; font-weight:700; }
+  .dinner-card { background:#FFFDF7; border:1px solid #E5DEC9; border-radius:16px; padding:13px; margin:0 0 10px; box-shadow:0 2px 8px rgba(74,62,53,.045); }
+  .dinner-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+  .dinner-name { font-size:1.04rem; line-height:1.4; font-weight:800; overflow-wrap:anywhere; }
+  .dinner-tag { display:inline-block; background:#F2E8CF; color:#80613B; padding:3px 8px; border-radius:9px; font-size:.7rem; font-weight:700; margin-top:6px; }
+  .dinner-page { display:none; flex:none; background:#F7F2E8; border-radius:8px; padding:3px 7px; color:#887A6C; font-size:.68rem; }
+  .dinner-meta { display:grid; grid-template-columns:1fr 1fr; gap:7px; margin:11px 0 9px; }
+  .dinner-meta-item { background:#FBF7EE; border-radius:10px; padding:8px 9px; min-width:0; }
+  .dinner-meta-label { display:block; font-size:.67rem; color:#8A7C6D; margin-bottom:2px; }
+  .dinner-meta-value { display:block; font-size:.79rem; line-height:1.35; font-weight:700; overflow-wrap:anywhere; }
+  .dinner-note { font-size:.78rem; line-height:1.5; color:#65594F; padding:1px 1px 0; }
+  .dinner-actions { display:flex; gap:8px; margin-top:11px; }
+  .dinner-actions a { flex:1; display:flex; align-items:center; justify-content:center; min-height:38px; border-radius:11px; text-decoration:none; font-size:.77rem; font-weight:800; }
+  .dinner-actions .map { background:#EBF2E6; border:1px solid #C5D6BA; color:#4A633D; }
+  .dinner-actions .tabelog { background:#FFF3EF; border:1px solid #E8C4B8; color:#A65E49; }
+  .dinner-caveat { background:#FFF8E9; border:1px dashed #D5B263; border-radius:12px; padding:10px 11px; color:#78643E; font-size:.73rem; line-height:1.5; margin-top:12px; }
+}
+
 </style>
 </head>
 <body>
@@ -638,6 +677,7 @@
       <button class="nav-btn active" onclick="switchView('overview', this)">總覽資訊</button>
       <button class="nav-btn" onclick="switchView('daily', this)">每日行程</button>
       <button class="nav-btn" onclick="switchView('foodall', this)">餐廳/超市</button>
+      <button class="nav-btn" onclick="switchView('morishitaDinner', this)">森下晚餐列表</button>
       <button class="nav-btn" onclick="switchView('taxfree', this)">日本退稅</button>
       <button class="nav-btn" onclick="switchView('currency', this)">匯率換算</button>
     </div>
@@ -758,6 +798,13 @@
       <div class="sec-heading">📖 全行程餐廳・超市一覽表</div>
       <div id="allFoodContainer"></div>
     </section>
+
+    <!-- 森下晚餐列表：依食べログ第1～7頁先前篩選結果彙整 -->
+    <section id="view-morishitaDinner" class="view-section">
+      <div class="sec-heading">🍽️ 森下晚餐列表</div>
+      <div id="morishitaDinnerTable"></div>
+    </section>
+
     <!-- 第四頁：日本退稅攻略 -->
     <section id="view-taxfree" class="view-section">
       <div class="sec-heading">💴 成田機場 T1 退稅攻略</div>
@@ -992,6 +1039,31 @@
         note: "推薦鬆餅漢堡"
       }
     ];
+
+    // 每日餐廳下方：依當日行程區域整理的平價雜貨店（已查到分店者才列出）
+    const dailyValueShops = {
+      2: [
+        { name: "DAISO 渋谷マークシティ店", detail: "澀谷站旁・Mark City 1F／09:30–21:00", query: "DAISO 渋谷マークシティ店" },
+        { name: "DAISO 渋谷センター街店", detail: "澀谷 Center街／10:00–21:30", query: "DAISO 渋谷センター街店" },
+        { name: "Can★Do 渋谷井ノ頭通り店", detail: "宇田川町／10:00–22:00", query: "キャンドゥ 渋谷井ノ頭通り店" }
+      ],
+      5: [
+        { name: "3COINS+plus LaQua店", detail: "東京巨蛋 LaQua 2F（原行程已安排）", query: "3COINS LaQua ラクーア" },
+        { name: "Can★Do 丸の内オアゾ店", detail: "東京站丸之內側・丸之內OAZO B1／平日08:00–22:00、週末09:00–21:00", query: "Can Do 丸の内オアゾ店" },
+        { name: "3COINS ヤエチカ店", detail: "東京站八重洲地下街／10:00–21:00", query: "3COINS ヤエチカ店" }
+      ],
+      6: [
+        { name: "DAISO 河口湖ベル店", detail: "河口湖購物中心 BELL 3F／10:00–20:00；距河口湖站步行約13分鐘，需視包車動線安排", query: "DAISO 河口湖ベル店" }
+      ],
+      8: [
+        { name: "Seria 上野マルイ店", detail: "上野丸井 7F／11:00–20:00", query: "セリア 上野マルイ店" },
+        { name: "3COINS エチカフィット上野店", detail: "銀座線上野站構內 B1F；平日08:00–22:00、週末09:00–21:00（留意店舖位於站內）", query: "3COINS OOOPS エチカフィット上野店" },
+        { name: "DAISO 浅草ROX店", detail: "淺草ROX 4F／10:30–21:00", query: "DAISO 浅草ROX店" },
+        { name: "3COINS+plus 浅草ROX店", detail: "淺草ROX 2F／10:30–21:00", query: "3COINS+plus 浅草ROX店" },
+        { name: "Seria 浅草EKIMISE店", detail: "淺草EKIMISE 5F／10:00–20:00", query: "セリア 浅草EKIMISE店" },
+        { name: "DAISO 東京ソラマチ店", detail: "東京晴空塔 Solamachi East Yard 4F／10:00–21:00", query: "DAISO 東京ソラマチ店" }
+      ]
+    };
 
     // 2. 每日行程與當日餐廳資料
     const daysData = [
@@ -1446,6 +1518,27 @@
         restSec.style.display = 'none';
       }
 
+      // 百元商店／平價雜貨店：顯示在每日餐廳清單下方
+      const shops = dailyValueShops[d.day] || [];
+      let shopSec = document.getElementById('dailyValueShopSection');
+      if (!shopSec) {
+        shopSec = document.createElement('div');
+        shopSec.id = 'dailyValueShopSection';
+        restSec.insertAdjacentElement('afterend', shopSec);
+      }
+      shopSec.innerHTML = shops.length ? `
+        <div class="sec-heading">🛍️ 本日附近百元商店／平價雜貨</div>
+        <div class="card">
+          ${shops.map(shop => `
+            <div class="food-item">
+              <div class="food-name">${shop.name}</div>
+              <div class="food-detail">📍 ${shop.detail}</div>
+              <a class="map-btn" href="${getMapUrl(shop.query)}">📍 Google 地圖導航</a>
+            </div>
+          `).join('')}
+        </div>
+      ` : '';
+
       document.getElementById('btnPrevDay').disabled = activeDayIdx === 0;
       document.getElementById('btnNextDay').disabled = activeDayIdx === daysData.length - 1;
     }
@@ -1519,11 +1612,65 @@
       document.getElementById('dayScroll').scrollBy({ left: px, behavior: 'smooth' });
     }
 
+
+    // 森下晚餐列表：整合本次對話中第1～7頁先前篩選到的候選店家
+    const morishitaDinnerData = [
+      {page:1,name:"大阪焼肉 炭照",category:"燒肉",hours:"週日 11:30–24:00",smoke:"分煙（露台可吸電子菸；榻榻米區禁煙）",note:"燒肉；不同區域吸菸規定不同，帶小孩訂位先要求禁煙席",url:"https://www.google.com/maps/search/?api=1&query="},
+      {page:1,name:"深川焼肉ホルモン蔵",category:"燒肉",hours:"週日 15:00–23:00",smoke:"全席禁煙",note:"燒肉／內臟燒肉",url:""},
+      {page:1,name:"牛坊 菊川店",category:"燒肉",hours:"週日 16:00–24:00",smoke:"全席禁煙",note:"菊川站周邊；燒肉",url:""},
+      {page:1,name:"焼肉 冷麺 てっちゃん 森下店",category:"燒肉",hours:"週日 15:00–23:00",smoke:"分煙",note:"燒肉、冷麵；訂位時確認禁煙席",url:""},
+      {page:1,name:"イタリアンバル Aoneco",category:"義式／披薩",hours:"週日 16:00–23:30",smoke:"全席禁煙",note:"義式餐酒館",url:""},
+      {page:1,name:"串カツ田中 菊川店",category:"串炸／居酒屋",hours:"週日 12:00–23:00",smoke:"全席禁煙",note:"串炸；連鎖店，親子用餐可再確認兒童餐及座位",url:""},
+      {page:1,name:"ナンクルナイサ きばいやんせー 森下店",category:"串炸／居酒屋",hours:"週日 17:00–23:00",smoke:"全席禁煙",note:"沖繩料理／居酒屋",url:""},
+      {page:1,name:"きんちゃん家 森下店",category:"串炸／居酒屋",hours:"週日 14:00–翌01:00",smoke:"分煙",note:"居酒屋；帶小孩建議先確認座位區域",url:""},
+      {page:1,name:"ホイアン",category:"越南料理",hours:"週日 11:00–15:00、17:00–24:00",smoke:"全席禁煙",note:"越南料理",url:""},
+      {page:1,name:"ファイヤーチキン 菊川店",category:"雞料理",hours:"週日 11:00–23:00",smoke:"全席禁煙",note:"有桌席／BOX席、兒童餐；可推嬰兒車，親子友善",url:""},
+      {page:"2–7",name:"平和閣",category:"燒肉",hours:"週日 17:00–22:40",smoke:"全席禁煙",note:"38席，有榻榻米座位；食べログ預算約 ¥6,000–7,999／人",url:"https://tabelog.com/tokyo/A1312/A131201/13005057/"},
+      {page:"2–7",name:"PIZZA＆CAFE TANTON",category:"義式／披薩",hours:"週日 11:30–15:00、17:30–22:00",smoke:"全席禁煙",note:"26席桌席；可帶幼兒及小學生、有兒童餐、可推嬰兒車；約 ¥4,000–4,999／人",url:"https://tabelog.com/tokyo/A1312/A131201/13310662/"},
+      {page:"2–7",name:"ピジョン（PIGEON）",category:"加州／墨西哥料理",hours:"週日 17:00–22:00",smoke:"分煙（二樓可吸加熱式菸品）",note:"32席、有二樓包廂；兒童可入店、可推嬰兒車；6人以上建議預約套餐",url:"https://tabelog.com/tokyo/A1312/A131201/13190348/"},
+      {page:"2–7",name:"森下バル オブサンズ",category:"西班牙／餐酒館",hours:"週日 12:00–14:00、17:00–24:00",smoke:"全席禁煙",note:"兒童可入店；座位資訊需向店家確認；約 ¥4,000–4,999／人",url:"https://tabelog.com/tokyo/A1312/A131201/13206503/"},
+      {page:"2–7",name:"BistroPub UTAKATA",category:"法式／小酒館",hours:"週日 15:00–24:00（料理最後點餐 22:00）",smoke:"全席禁煙",note:"22席、有沙發座位；可帶小孩，預約時告知；約 ¥6,000–7,999／人",url:"https://tabelog.com/tokyo/A1312/A131201/13277769/"},
+      {page:"2–7",name:"bistro 234",category:"法式／小酒館",hours:"週日 17:30–23:00",smoke:"全席禁煙",note:"14席；可帶幼兒及小學生、可推嬰兒車；6人需先確認同桌；約 ¥5,000–5,999／人",url:"https://tabelog.com/tokyo/A1312/A131201/13280057/"}
+    ];
+
+    let activeDinnerCategory = '全部';
+
+    function renderMorishitaDinner() {
+      const container = document.getElementById('morishitaDinnerTable');
+      const categories = ['全部', ...new Set(morishitaDinnerData.map(x => x.category))];
+      const rows = activeDinnerCategory === '全部'
+        ? morishitaDinnerData
+        : morishitaDinnerData.filter(x => x.category === activeDinnerCategory);
+      const filterHtml = categories.map(category => {
+        const count = category === '全部' ? morishitaDinnerData.length : morishitaDinnerData.filter(x => x.category === category).length;
+        return `<button type="button" class="dinner-filter-btn ${activeDinnerCategory === category ? 'active' : ''}" aria-pressed="${activeDinnerCategory === category}" onclick="setDinnerCategory('${category.replace(/'/g, "\\'")}')">${category}<span class="filter-count">${count}</span></button>`;
+      }).join('');
+      container.innerHTML = `
+        <div class="dinner-filter-wrap">
+          <div class="dinner-filter-title">依料理類型篩選（左右滑動查看更多）</div>
+          <div class="dinner-filters">${filterHtml}</div>
+        </div>
+        <div class="dinner-result-count">目前顯示 ${rows.length} / ${morishitaDinnerData.length} 間店家</div>
+        ${rows.length ? rows.map(x => `
+          <article class="dinner-card">
+            <div class="dinner-card-top"><div><div class="dinner-name">${x.name}</div><span class="dinner-tag">${x.category}</span></div></div>
+            <div class="dinner-meta"><div class="dinner-meta-item"><span class="dinner-meta-label">🕒 週日營業</span><span class="dinner-meta-value">${x.hours}</span></div><div class="dinner-meta-item"><span class="dinner-meta-label">🚭 吸菸狀態</span><span class="dinner-meta-value">${x.smoke}</span></div></div>
+            <div class="dinner-note">${x.note}</div>
+            <div class="dinner-actions"><a class="map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.name+' 森下 東京')}">Google 地圖 ↗</a>${x.url && x.url.includes('tabelog.com') ? `<a class="tabelog" target="_blank" rel="noopener" href="${x.url}">食べログ ↗</a>` : ''}</div>
+          </article>`).join('') : '<div class="dinner-empty">目前沒有這個分類的店家。</div>'}`;
+    }
+
+    function setDinnerCategory(category) {
+      activeDinnerCategory = category;
+      renderMorishitaDinner();
+    }
+
     // 初始化所有區塊
     renderBaseStores();
     renderDayBar();
     renderDailyView();
     renderAllFoodView();
+    renderMorishitaDinner();
     // 匯率換算功能（固定匯率 0.21）
     function calcTwd() {
       const rate = 0.21;
