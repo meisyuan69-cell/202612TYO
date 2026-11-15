@@ -687,6 +687,27 @@
 .drink-step strong{display:block;margin-bottom:4px;color:#4A633D}
 .drink-empty{background:#FFFDF7;border:1px dashed #D9CDB5;border-radius:14px;padding:20px;text-align:center;color:#8A7C6D;font-size:.82rem}
 
+
+/* 超商必買：手機商品照片卡片 */
+.conbini-filter-panel{background:#FFFDF7;border:1px solid #E5DEC9;border-radius:16px;padding:13px;margin:0 0 12px;box-shadow:0 2px 8px rgba(74,62,53,.045)}
+.conbini-filter-label{display:block;font-size:.76rem;font-weight:800;color:#7E7063;margin:0 0 7px}
+.conbini-select{width:100%;min-height:44px;border:1px solid #D9CDB5;border-radius:11px;background:#FBF7EE;color:#4A3E35;padding:0 38px 0 12px;font-size:.9rem;font-weight:700;outline:none}
+.conbini-count{font-size:.73rem;color:#8A7C6D;margin:0 2px 12px}
+.conbini-note{background:#F4F0E4;border:1px solid #E5DEC9;border-radius:12px;padding:10px 12px;margin:0 0 12px;font-size:.76rem;line-height:1.6;color:#665844}
+.conbini-note.warning{background:#FFF4E8;border-color:#E8C9A7;color:#865D37}
+.conbini-section-title{font-size:.98rem;font-weight:900;color:#4A3E35;margin:17px 2px 9px;padding-left:10px;border-left:4px solid #B88A54}
+.conbini-card{display:flex;gap:12px;align-items:flex-start;background:#FFFDF7;border:1px solid #E5DEC9;border-radius:15px;padding:10px;margin:0 0 10px;box-shadow:0 2px 8px rgba(74,62,53,.045)}
+.conbini-photos{width:112px;flex:0 0 112px;display:flex;gap:5px;flex-wrap:wrap}
+.conbini-photo{width:100%;height:112px;object-fit:contain;background:#F5F0E7;border-radius:10px;border:1px solid #EEE5D8}
+.conbini-photos.multi .conbini-photo{width:calc(50% - 3px);height:112px}
+.conbini-content{min-width:0;flex:1}
+.conbini-store-tag{display:inline-block;background:#F2E8CF;color:#80613B;padding:3px 8px;border-radius:9px;font-size:.66rem;font-weight:800;margin-bottom:6px}
+.conbini-name{font-size:.9rem;line-height:1.4;font-weight:900;color:#4A3E35;overflow-wrap:anywhere}
+.conbini-jp{font-size:.76rem;line-height:1.5;color:#80613B;font-weight:700;margin-top:5px;overflow-wrap:anywhere}
+.conbini-category{font-size:.68rem;color:#8A7C6D;margin-top:7px}
+.conbini-no-image{width:112px;height:112px;flex:0 0 112px;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;background:#F5F0E7;border-radius:10px;color:#8A7C6D;font-size:.7rem}
+@media(max-width:480px){.conbini-card{gap:10px;padding:9px}.conbini-photos,.conbini-no-image{width:98px;flex-basis:98px}.conbini-photo{height:98px}.conbini-photos.multi .conbini-photo{height:98px}.conbini-name{font-size:.86rem}}
+
 </style>
 </head>
 <body>
@@ -699,6 +720,7 @@
       <button class="nav-btn" onclick="switchView('foodall', this)">餐廳/超市</button>
       <button class="nav-btn" onclick="switchView('morishitaDinner', this)">森下晚餐列表</button>
       <button class="nav-btn" onclick="switchView('drinks', this)">飲料</button>
+      <button class="nav-btn" onclick="switchView('conbini', this)">超商必買</button>
       <button class="nav-btn" onclick="switchView('taxfree', this)">日本退稅</button>
       <button class="nav-btn" onclick="switchView('currency', this)">匯率換算</button>
     </div>
@@ -829,6 +851,11 @@
     <section id="view-drinks" class="view-section">
       <div class="sec-heading">☕ 日本咖啡與超商飲品點餐字卡</div>
       <div id="drinksContainer"></div>
+    </section>
+
+    <section id="view-conbini" class="view-section">
+      <div class="sec-heading">🏪 日本三大超商必吃＆必買</div>
+      <div id="conbiniContainer"></div>
     </section>
 
     <!-- 第四頁：日本退稅攻略 -->
@@ -1727,6 +1754,46 @@
     }
 
 
+    // 超商必買清單：商品名稱與日文品名依使用者提供的資料整理；圖片為實際商品照片或對應包裝照片
+    const conbiniData = [
+      {section:'local',store:'全家 FamilyMart',name:'原味無骨炸雞',jp:'ファミチキ',images:['https://news.mynavi.jp/article/20230908-2767601/ogp_images/ogp.jpg'],type:'日本當地享用'},
+      {section:'local',store:'全家 FamilyMart',name:'舒芙蕾布丁',jp:'スフレ・プリン',images:['https://blog-imgs-135.fc2.com/b/o/n/bon3ten/P1040519.jpg'],type:'冷藏甜點・日本當地享用'},
+      {section:'local',store:'全家 FamilyMart',name:'碳烤鹽味雞胗／雞肉串',jp:'炭火焼き鳥（塩・たれ）',images:['https://www.family.co.jp/content/dam/family/goods/3520376.jpg'],type:'冷藏／冷凍熟食・日本當地享用'},
+      {section:'local',store:'LAWSON',name:'炸雞君（辣味／起司）',jp:'からあげクン（レッド／北海道チーズ）',images:['https://www.lawson.co.jp/recommend/original/detail/img/l456069_5.png','https://mognavi.jp/image/food/00/01/24/2994138_original.jpg'],type:'熱食・日本當地享用'},
+      {section:'local',store:'LAWSON',name:'頂級生乳蛋糕捲',jp:'プレミアムロールケーキ',images:['https://img.benesse-cms.jp/thank-you/item/image/normal/4c8bc502-9621-4552-aca1-2940cb8dc5bf.jpg?h=540&resize_mode=force&resize_type=cover&w=720'],type:'冷藏甜點・日本當地享用'},
+      {section:'local',store:'LAWSON',name:'麻糬口感生乳蛋糕捲',jp:'もち食感ロール',images:['https://img1.esimg.jp/image/assessment/2023/04/10107247_0_original.jpg?ts=1682858625745'],type:'冷藏甜點・日本當地享用'},
+      {section:'local',store:'LAWSON',name:'巴斯克乳酪蛋糕',jp:'バスチー',images:['https://i771.photobucket.com/albums/xx357/marumura/Tanoshii%20Japan/BASCHEE/2.jpg'],type:'冷藏甜點・日本當地享用'},
+      {section:'local',store:'7-ELEVEN',name:'厚切玉子燒三明治',jp:'厚焼きたまごサンド',images:['https://img1.esimg.jp/resize/1024x764/image/food/02/39/01/3024171_original.jpg?ts=1731427591097'],type:'冷藏熟食・日本當地享用'},
+      {section:'local',store:'7-ELEVEN',name:'金之燉牛肉／漢堡排',jp:'金のビーフシチュー／金のハンバーグ',images:['https://7premium.jp/files/blog/195/4957422055414.jpg','https://prcdn.freetls.fastly.net/release_image/155396/829/155396-829-b5cde7c075c570045236c4b0c0eeca43-543x532.jpg?auto=webp&fit=bounds&format=jpeg&height=480&width=720'],type:'冷藏熟食・日本當地享用'},
+      {section:'local',store:'三大超商',name:'OHAYO 焦糖烤布蕾冰淇淋',jp:'BRULEE（ブリュレ）',images:['https://medias.pns.hk/publishing/PNSHK-401188-front-zoom.jpg?version=1742819203'],type:'冷凍冰品・日本當地享用'},
+      {section:'local',store:'三大超商',name:'OHAYO 澤西牛乳布丁',jp:'ジャージー牛乳プリン',images:['https://www.tokiwa-portal.com/img/goods/L/4970020170037.jpg'],type:'冷藏甜點・日本當地享用'},
+      {section:'local',store:'三大超商',name:'格力高果實冰球',jp:'アイスの実（ぶどう／もも）',images:['https://prcdn.freetls.fastly.net/release_image/1124/478/1124-478-15e5d2569653828440d2a9db9c9d5324-960x678.jpg?auto=webp&fit=bounds&format=jpeg&height=480&width=720'],type:'冷凍冰品・日本當地享用'},
+      {section:'souvenir',store:'7-ELEVEN',name:'砂糖奶油樹聯名夾心餅',jp:'シュガーバターの木（3個入）',images:['https://i.ebayimg.com/images/g/U1MAAOSw2IZoVOKY/s-l400.png'],type:'常溫伴手禮'},
+      {section:'souvenir',store:'7-ELEVEN',name:'蘭姆葡萄夾心餅乾',jp:'レーズンサンド（3個入）',images:['https://foodfighter.jp/wp-content/uploads/2023/10/01ecb361e6b6eff32f63c2d1cd28674c.jpg'],type:'常溫伴手禮'},
+      {section:'souvenir',store:'7-ELEVEN',name:'巧克力水果軟糖',jp:'チョコっとグミ（シャインマスカット等）',images:['https://image.itmedia.co.jp/business/articles/2404/04/l_kk_gumi_02.jpg'],type:'常溫零食'},
+      {section:'souvenir',store:'7-ELEVEN',name:'Gummy Maru 水果軟糖',jp:'グミまる',images:['https://gojapanned.com/cdn/shop/files/muscat.png?v=1757161358&width=3840'],type:'常溫零食'},
+      {section:'souvenir',store:'7-ELEVEN',name:'開心果千層派餅乾',jp:'ピスタチオサンド／パイ',images:['https://img.croketglobal.net/item/contents/20b5939d-c973-47d5-918d-2b8745e65e7a.jpeg'],type:'常溫零食・同系列開心果夾心商品照片'},
+      {section:'souvenir',store:'7-ELEVEN',name:'蒙古タンメン中本 辣味增杯麵',jp:'蒙古タンメン中本 辛旨味噌',images:['https://hifumi.com.au/cdn/shop/files/4902105252734.jpg?v=1697078825'],type:'常溫泡麵'},
+      {section:'souvenir',store:'全家 FamilyMart',name:'黑松露／炸雞風味洋芋片',jp:'ファミマル ポテトチップス',images:['https://mognavi.jp/image/food/00/01/01/2701049_original.jpg'],type:'常溫零食・圖片為黑松露鹽味款'},
+      {section:'souvenir',store:'全家 FamilyMart',name:'日式今治毛巾襪',jp:'ラインソックス',images:['https://image.damanwoo.com/files/media/7/4/1/0/8/9/5/7410895.jpg'],type:'常溫雜貨'},
+      {section:'souvenir',store:'三大超商',name:'期間限定雷神巧克力',jp:'ブラックサンダー（期間限定／北海道白雷神）',images:['https://ec.notosuisan.co.jp/html/upload/save_image/0510123653_663d9655620b1.jpg'],type:'常溫零食・照片為北海道白雷神款'},
+      {section:'souvenir',store:'三大超商',name:'甘樂 Pure 鮮果實軟糖',jp:'カンロ ピュレグミ（マスカット／レモン）',images:['https://nipponjourney.jp/cdn/shop/files/4901351058626-1.png?v=1746079944'],type:'常溫零食'},
+      {section:'souvenir',store:'三大超商',name:'UHA 味覺糖 酷露露軟糖',jp:'コロロ（巨峰／シャインマスカット）',images:['https://nipponjourney.jp/cdn/shop/files/4902750706200-2_b87bb204-6702-4de0-a0dc-511162e32647.png?v=1747812006&width=416'],type:'常溫零食'},
+      {section:'souvenir',store:'三大超商',name:'Bourbon 帆船巧克力餅乾',jp:'アルフォート（ミニチョコレート）',images:['https://pics.xprice.co.jp/i/5469/0000005755469L.jpg'],type:'常溫零食'}
+    ];
+    let activeConbiniStore = '全部店家';
+    function renderConbini(){
+      const container=document.getElementById('conbiniContainer'); if(!container)return;
+      const stores=['全部店家','7-ELEVEN','全家 FamilyMart','LAWSON','三大超商'];
+      const filtered=activeConbiniStore==='全部店家'?conbiniData:conbiniData.filter(x=>x.store===activeConbiniStore);
+      const counts=Object.fromEntries(stores.map(st=>[st,st==='全部店家'?conbiniData.length:conbiniData.filter(x=>x.store===st).length]));
+      const options=stores.map(st=>`<option value="${st}" ${activeConbiniStore===st?'selected':''}>${st}（${counts[st]} 項）</option>`).join('');
+      const local=filtered.filter(x=>x.section==='local'), souvenir=filtered.filter(x=>x.section==='souvenir');
+      const card=x=>`<article class="conbini-card"><div class="conbini-photos ${x.images.length>1?'multi':''}">${x.images.map((src,i)=>`<img class="conbini-photo" src="${src}" alt="${x.name} 商品照片 ${i+1}" loading="lazy" onerror="this.style.display='none'">`).join('')}</div><div class="conbini-content"><span class="conbini-store-tag">${x.store}</span><div class="conbini-name">${x.name}</div><div class="conbini-jp">${x.jp}</div><div class="conbini-category">${x.type}</div></div></article>`;
+      container.innerHTML=`<div class="conbini-filter-panel"><label class="conbini-filter-label" for="conbiniStoreSelect">🏪 選擇店家篩選</label><select id="conbiniStoreSelect" class="conbini-select" onchange="setConbiniStore(this.value)">${options}</select></div><div class="conbini-count">目前顯示 ${filtered.length} / ${conbiniData.length} 項商品</div>${local.length?`<div class="conbini-section-title">🍙 日本現地必吃</div><div class="conbini-note warning">⚠️ 依原始清單提醒：此區多為冷藏／冷凍或含肉類商品，請在日本當地享用完畢，勿帶回台灣。</div>${local.map(card).join('')}`:''}${souvenir.length?`<div class="conbini-section-title">🛍️ 可帶回台灣伴手禮</div><div class="conbini-note">常溫包裝商品；實際入境仍請以台灣海關最新規定為準。</div>${souvenir.map(card).join('')}`:''}`;
+    }
+    function setConbiniStore(store){activeConbiniStore=store;renderConbini();}
+
     // 初始化所有區塊
     renderBaseStores();
     renderDayBar();
@@ -1734,6 +1801,7 @@
     renderAllFoodView();
     renderMorishitaDinner();
     renderDrinks();
+    renderConbini();
     // 匯率換算功能（固定匯率 0.21）
     function calcTwd() {
       const rate = 0.21;
