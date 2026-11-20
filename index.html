@@ -1363,12 +1363,14 @@
             icon: "🐧",
             title: "必看動物表演與互動時間",
             sub: [
-              { text: "11:00 / 15:30｜Animal Life Live!（約25分・AQUA MUSEUM 4樓）" },
-              { text: "12:00 / 16:30｜企鵝歸巢及互動表演（約10分・海洋親密館）" },
-              { text: "12:30 或 15:00｜四樓小水獺餵食握手 500円（4F服務台購買）" },
-              { text: "13:00｜Animal Life Live! ～『18TRIP』ver.～（AQUA MUSEUM 4樓）" },
-              { text: "13:00 / 15:00｜海洋親密館企鵝&動物表演（Friendly Circle）" },
-              { text: "15:00｜一樓沙丁魚幻覺舞（約5分・AQUA MUSEUM 1樓）" }
+              { text: "11:30｜Animal Life Live!（約25分・AQUA MUSEUM 4樓）" },
+              { text: "12:30｜一樓沙丁魚幻覺舞（約5分・AQUA MUSEUM 1樓）" },
+              { text: "13:40｜企鵝歸巢及互動表演（約10分・海洋親密館）" },
+              { text: "12:00／15:00｜海洋親密館企鵝&動物表演（Friendly Circle）" },
+              { text: "14:30｜Animal Life Live! ～『18TRIP』ver.～（AQUA MUSEUM 4樓）" },
+              { text: "15:00｜四樓小水獺餵食握手 500円（4F服務台購買）" },
+              { text: "15:10｜白鯨水下表演（約10分鐘・AQUA MUSEUM 1樓 海洋生物實驗室）" },
+              { text: "17:00｜LIGHTIA～七色のキセキ～（約20分・AQUA MUSEUM 4樓）" }
             ]
           },
           { time: "回程", icon: "🚆", title: "八景島 → 森下", transport: "八景島 → 金沢八景(京急線) → 大門/藏前 → 森下（約1小時30分・1,060円）", mapQuery: "森下駅 東京" }
@@ -1709,7 +1711,7 @@
             <div class="dinner-card-top"><div><div class="dinner-name">${x.name}</div><span class="dinner-tag">${x.category}</span></div></div>
             <div class="dinner-meta"><div class="dinner-meta-item"><span class="dinner-meta-label">🕒 週日營業</span><span class="dinner-meta-value">${x.hours}</span></div><div class="dinner-meta-item"><span class="dinner-meta-label">🚭 吸菸狀態</span><span class="dinner-meta-value">${x.smoke}</span></div></div>
             <div class="dinner-note">${x.note}</div>
-            <div class="dinner-actions"><a class="map" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.name+' 森下 東京')}">Google 地圖 ↗</a>${x.url && x.url.includes('tabelog.com') ? `<a class="tabelog" target="_blank" rel="noopener" href="${x.url}">食べログ ↗</a>` : ''}</div>
+            <div class="dinner-actions"><a class="map" href="${getMapUrl(x.name+' 森下 東京')}">Google 地圖 App ↗</a>${x.url && x.url.includes('tabelog.com') ? `<a class="tabelog" target="_blank" rel="noopener" href="${x.url}">食べログ ↗</a>` : ''}</div>
           </article>`).join('') : '<div class="dinner-empty">目前沒有這個分類的店家。</div>'}`;
     }
 
